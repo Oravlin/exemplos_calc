@@ -3,11 +3,12 @@ from tkinter import *
 class Application:
     def __init__(self, master=None):
         global valorVisor
-        valorVisor = ""
-
         global numeroAtual
+
+        valorVisor = ""
         numeroAtual = ""
 
+        # Padding dos botões
         padxBotoes = 2
         padyBotoes = 2
         widthBotoes = 4
@@ -44,7 +45,7 @@ class Application:
         self.btnTres = Button(self.janela, text="3", width=widthBotoes, height=heightBotoes, command=lambda: self.digitar(3))
         self.btnTres.grid(row=2, column=2, padx=padxBotoes, pady=padyBotoes)
                 
-        self.btnMulti = Button(self.janela, text="*", width=widthBotoes, height=heightBotoes, command=lambda: self.inserirOperador("*"))
+        self.btnMulti = Button(self.janela, text="x", width=widthBotoes, height=heightBotoes, command=lambda: self.inserirOperador("x"))
         self.btnMulti.grid(row=2, column=3, padx=padxBotoes, pady=padyBotoes)
 
 
@@ -79,7 +80,7 @@ class Application:
         self.btnZero = Button(self.janela, text="0", width=widthBotoes * 2 + 2, height=heightBotoes, command=lambda: self.digitar(0))
         self.btnZero.grid(row=5, column=0, columnspan=2, padx=padxBotoes, pady=padyBotoes)
                 
-        self.btnPonto = Button(self.janela, text=".", width=widthBotoes, height=heightBotoes, command=lambda: self.inserirOperador("."))
+        self.btnPonto = Button(self.janela, text=".", width=widthBotoes, height=heightBotoes, command= self.inserirPonto)
         self.btnPonto.grid(row=5, column=2, padx=padxBotoes, pady=padyBotoes)
 
     # Funções dos botões
@@ -87,7 +88,6 @@ class Application:
         global valorVisor
         self.visor.insert(END, str(numero))
         valorVisor += str(numero)
-
         print(valorVisor)
         
     def apagarTudo(self):
@@ -103,18 +103,36 @@ class Application:
             valorVisor = valorVisor[:-1]
             print(valorVisor)
 
-    def inserirOperador(self, operador):
+    def calcular(self):
+        resultado = 3
+        return resultado
+
+    def inserirOperador(self, operadorEnviado):
         global valorVisor
         conteudo = self.visor.get()
-        if conteudo and conteudo[-1] not in "+-*÷.":
-            self.visor.insert(END, operador)
-            valorVisor += operador
+
+        if conteudo == "":
+            pass
+        
+        operadores = ["+", "-", "x", "÷"]
+        if all(operador not in conteudo for operador in operadores):
+            self.visor.insert(END, operadorEnviado)
+            valorVisor += operadorEnviado
             print(valorVisor)
+        else:
+            resultado = str(self.calcular())
+            self.valorVisor = resultado + operadorEnviado
+            self.visor.delete(0, END)
+            self.visor.insert(END, self.valorVisor)
+        
+            
 
-    def calcular(self):
+    def inserirPonto(self):
+        valorVisor = self.visor.get()
+        if "." not in valorVisor and valorVisor != "":
+            self.visor.insert(END, ".")
 
-        pass
-
+    
 
 root = Tk()
 root.title("Calculadora")
