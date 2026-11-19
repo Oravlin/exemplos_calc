@@ -1,12 +1,15 @@
 from tkinter import *
+import re
 
 class Application:
     def __init__(self, master=None):
         global valorVisor
         global numeroAtual
+        global operadores
 
         valorVisor = ""
         numeroAtual = ""
+        operadores = ["+", "-", "x", "÷"]
 
         # Padding dos botões
         padxBotoes = 2
@@ -104,17 +107,28 @@ class Application:
             print(valorVisor)
 
     def calcular(self):
-        resultado = 3
+        global operadores
+        global valorVisor
+
+        if valorVisor == "" or all(operador not in valorVisor for operador in operadores):
+            print("Erro de digitação!")
+            return
+
+        #valorSeparado = re.split(r'[\+\-x÷]', valorVisor)
+
+        resultado = eval(valorVisor)
+        print(resultado)
+        self.visor.insert(resultado)
         return resultado
 
     def inserirOperador(self, operadorEnviado):
         global valorVisor
+        global operadores
         conteudo = self.visor.get()
 
         if conteudo == "":
-            pass
+            return
         
-        operadores = ["+", "-", "x", "÷"]
         if all(operador not in conteudo for operador in operadores):
             self.visor.insert(END, operadorEnviado)
             valorVisor += operadorEnviado
@@ -128,9 +142,20 @@ class Application:
             
 
     def inserirPonto(self):
-        valorVisor = self.visor.get()
-        if "." not in valorVisor and valorVisor != "":
+        global operadores
+        global valorVisor
+        
+        if ("." not in valorVisor and valorVisor != ""):
             self.visor.insert(END, ".")
+            valorVisor += "."
+
+        elif (any(operador in valorVisor for operador in operadores)):
+            valorSeparado = re.split(r'[\+\-x÷]', valorVisor)
+
+            if ("." not in valorSeparado[1] and valorSeparado[1] != ""):
+                self.visor.insert(END, ".")
+                valorVisor += "."
+
 
     
 
