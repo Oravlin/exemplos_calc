@@ -89,6 +89,8 @@ class Application:
     # Funções dos botões
     def digitar(self, numero: int):
         global valorVisor
+        if all(operador not in self.visor.get() for operador in operadores):
+            self.apagarTudo()
         self.visor.insert(END, str(numero))
         valorVisor += str(numero)
         print(valorVisor)
@@ -110,7 +112,7 @@ class Application:
         global operadores
         global valorVisor
 
-        if valorVisor == "" or all(operador not in valorVisor for operador in operadores):
+        if valorVisor == "" or all(operador not in self.visor.get() for operador in operadores):
             print("Erro de digitação!")
             return
 
@@ -118,7 +120,9 @@ class Application:
 
         resultado = eval(valorVisor)
         print(resultado)
-        self.visor.insert(resultado)
+        self.apagarTudo()
+        self.visor.insert(END, str(resultado))
+        valorVisor = self.visor.get()
         return resultado
 
     def inserirOperador(self, operadorEnviado):
@@ -131,6 +135,10 @@ class Application:
         
         if all(operador not in conteudo for operador in operadores):
             self.visor.insert(END, operadorEnviado)
+            if operadorEnviado == "x":
+                operadorEnviado = "*"
+            elif operadorEnviado == "÷":
+                operadorEnviado = "/"
             valorVisor += operadorEnviado
             print(valorVisor)
         else:
