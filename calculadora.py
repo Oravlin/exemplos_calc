@@ -22,6 +22,7 @@ class Application:
         
         self.visor = Entry(self.janela, width=24, justify="right")
         self.visor.grid(row=0, column=0, columnspan=4, padx=5, pady=5)
+        self.visor.config(state="readonly")
 
 
         # Botões da linha 1
@@ -88,41 +89,52 @@ class Application:
 
     # Funções dos botões
     def digitar(self, numero: int):
+        self.visor.config(state="normal")
         global valorVisor
         self.visor.insert(END, str(numero))
         valorVisor += str(numero)
         print(valorVisor) 
+        self.visor.config(state="readonly")
         
     def apagarTudo(self):
         global valorVisor
+        self.visor.config(state="normal")
         self.visor.delete(0, END)
         valorVisor = ""
+        self.visor.config(state="readonly")
 
     def apagarUltimo(self):
         global valorVisor
+        self.visor.config(state="normal")
         ultimoNumero = self.visor.index(END) - 1
         if ultimoNumero >= 0:
             self.visor.delete(ultimoNumero)
             valorVisor = valorVisor[:-1]
             print(valorVisor)
+        self.visor.config(state="readonly")
 
     def calcular(self):
         global operadores
         global valorVisor
-
+        
         if valorVisor == "" or all(operador not in self.visor.get() for operador in operadores):
             print("Erro de digitação!")
+            self.visor.config(state="readonly")
             return
+        
 
         valorVisor = valorVisor.replace("x", "*").replace("÷", "/")
 
         resultado = eval(valorVisor)
         print(resultado)
         self.apagarTudo()
+        self.visor.config(state="normal")
         self.visor.insert(END, str(resultado))
         valorVisor = self.visor.get()
+        self.visor.config(state="readonly")
 
     def inserirOperador(self, operadorEnviado):
+        self.visor.config(state="normal")
         global valorVisor
         global operadores
         conteudo = self.visor.get()
@@ -136,9 +148,11 @@ class Application:
         self.visor.insert(END, operadorEnviado)
         valorVisor += operadorEnviado
         print(valorVisor)
+        self.visor.config(state="readonly")
             
 
     def inserirPonto(self):
+        self.visor.config(state="normal")
         global operadores
         global valorVisor
         
@@ -152,6 +166,7 @@ class Application:
             if ("." not in valorSeparado[1] and valorSeparado[1] != ""):
                 self.visor.insert(END, ".")
                 valorVisor += "."
+        self.visor.config(state="readonly")
 
 
     
