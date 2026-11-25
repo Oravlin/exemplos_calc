@@ -116,13 +116,25 @@ class Application:
     def calcular(self):
         global operadores
         global valorVisor
-        
-        if valorVisor == "" or all(operador not in self.visor.get() for operador in operadores):
-            print("Erro de digitação!")
+
+        # Verifica se o visor está vazio
+        if valorVisor == "":
+            print("Erro! Visor vazio.")
+            self.visor.config(state="readonly")
+            return
+
+        # Verifica se o visor não contém um operador
+        if  all(operador not in self.visor.get() for operador in operadores):
+            print("Erro! Insira uma conta válida.")
+            self.visor.config(state="readonly")
+            return
+
+        # Verifica se o visor termina em um operador
+        if any(operador in valorVisor[-1] for operador in operadores):
+            print("Erro! Insira um segundo número.")
             self.visor.config(state="readonly")
             return
         
-
         valorVisor = valorVisor.replace("x", "*").replace("÷", "/")
 
         resultado = eval(valorVisor)
@@ -134,17 +146,18 @@ class Application:
         self.visor.config(state="readonly")
 
     def inserirOperador(self, operadorEnviado):
-        self.visor.config(state="normal")
         global valorVisor
         global operadores
         conteudo = self.visor.get()
 
-        if conteudo == "":
+        if conteudo == "" or any(operador in valorVisor[-1] for operador in operadores):
+            print("Erro de digitação!")
             return
         
         if any(operador in conteudo for operador in operadores):
             self.calcular()
 
+        self.visor.config(state="normal")
         self.visor.insert(END, operadorEnviado)
         valorVisor += operadorEnviado
         print(valorVisor)
