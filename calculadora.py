@@ -89,11 +89,9 @@ class Application:
     # Funções dos botões
     def digitar(self, numero: int):
         global valorVisor
-        if all(operador not in self.visor.get() for operador in operadores):
-            self.apagarTudo()
         self.visor.insert(END, str(numero))
         valorVisor += str(numero)
-        print(valorVisor)
+        print(valorVisor) 
         
     def apagarTudo(self):
         global valorVisor
@@ -116,14 +114,13 @@ class Application:
             print("Erro de digitação!")
             return
 
-        #valorSeparado = re.split(r'[\+\-x÷]', valorVisor)
+        valorVisor = valorVisor.replace("x", "*").replace("÷", "/")
 
         resultado = eval(valorVisor)
         print(resultado)
         self.apagarTudo()
         self.visor.insert(END, str(resultado))
         valorVisor = self.visor.get()
-        return resultado
 
     def inserirOperador(self, operadorEnviado):
         global valorVisor
@@ -133,20 +130,12 @@ class Application:
         if conteudo == "":
             return
         
-        if all(operador not in conteudo for operador in operadores):
-            self.visor.insert(END, operadorEnviado)
-            if operadorEnviado == "x":
-                operadorEnviado = "*"
-            elif operadorEnviado == "÷":
-                operadorEnviado = "/"
-            valorVisor += operadorEnviado
-            print(valorVisor)
-        else:
-            resultado = str(self.calcular())
-            self.valorVisor = resultado + operadorEnviado
-            self.visor.delete(0, END)
-            self.visor.insert(END, self.valorVisor)
-        
+        if any(operador in conteudo for operador in operadores):
+            self.calcular()
+
+        self.visor.insert(END, operadorEnviado)
+        valorVisor += operadorEnviado
+        print(valorVisor)
             
 
     def inserirPonto(self):
